@@ -39,6 +39,7 @@ public class Topic_01_Check_Environment {
 		// change from Eclipse
 		//Change from  IntelliJ
 		//commit 15/6
+		
 	}
 
 	@Test
