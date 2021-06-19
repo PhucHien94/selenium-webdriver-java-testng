@@ -43,7 +43,7 @@ public class Topic_02_Xpath_Css_Part_I_Locator {
 	}
 	
 	@Test
-	public void TC_03_Name5() {
+	public void TC_03_Name() {
 		
 		driver.get("https://demo.nopcommerce.com/register?returnUrl=%2F");
 		driver.findElement(By.name("Email")).sendKeys("phuchien94@gmail.com");
@@ -105,9 +105,6 @@ public class Topic_02_Xpath_Css_Part_I_Locator {
 		sleepInSecond(3);
 		
 		driver.findElement(By.xpath("//input[contains(@class,'search-box-text')]")).sendKeys("AutomationFC");
-		sleepInSecond(3);
-		
-		driver.findElement(By.xpath("//input[@name='Email']")).sendKeys("phuchien94@gmail.com");
 		sleepInSecond(3);
 		
 		driver.findElement(By.xpath("//input[@name='Email']")).sendKeys("phuchien94@gmail.com");
