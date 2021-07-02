@@ -1,5 +1,7 @@
 package webdriver;
 
+import java.util.concurrent.TimeUnit;
+
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.firefox.FirefoxDriver;
 import org.testng.annotations.AfterClass;
@@ -12,6 +14,7 @@ public class Topic_00_Template {
 	@BeforeClass
 	public void beforeClass() {
 		driver = new FirefoxDriver();	
+		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 	}
 	
 	@Test
