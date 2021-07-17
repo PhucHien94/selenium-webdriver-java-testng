@@ -1,5 +1,7 @@
 package webdriver;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
@@ -8,17 +10,11 @@ import org.openqa.selenium.JavascriptExecutor;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.firefox.FirefoxDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.Assert;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
-
-import com.sun.javafx.scene.web.Debugger;
-
-import jdk.nashorn.internal.runtime.Debug;
 
 public class Demo_Zalo_Ads2 {
 	WebDriver driver;
@@ -26,7 +22,8 @@ public class Demo_Zalo_Ads2 {
 	WebDriverWait explicitWait;
 	JavascriptExecutor jsExecutor;
 
-	String[] selectValueExpect = { "25-34", "35-44", "55-64"};
+	String[] selectValueExpect = { "25-34", "35-44", "55-64" };
+	List<String> selectedValueSave = new ArrayList<String>();
 
 	@BeforeClass
 	public void beforeClass() {
@@ -61,9 +58,32 @@ public class Demo_Zalo_Ads2 {
 	public void TC_02_Ads_Create() {
 		driver.get("https://ads.zalo.me/client/ads/create/15704693");
 		clickToElement(selectValueExpect);
-		sleepInSecond(3);
+		sleepInSecond(1);
 		Assert.assertTrue(checkSelectedItem(selectValueExpect));
 
+	}
+
+	@Test
+	public void TC_03_Save() {
+		//Luu tuoi da chon
+		List<WebElement> allSelectedItem = driver.findElements(
+				By.xpath("//li[@class='pure-checkbox selected-item']//div[@class='squaredFour have-label']//label"));
+		for (WebElement childSelectedElement : allSelectedItem) {
+			String childSeletedItemText = childSelectedElement.getText();
+			selectedValueSave.add(childSeletedItemText);	
+		}
+		//Nhan luu
+		clickToElementByJS(By.xpath("//div[@class='c-btn']"));
+		clickToElementByJS(By.xpath("//a[@class='btn btn-default mg-right-10'][contains(text(),'Lưu')]"));
+		sleepInSecond(2);
+		clickToElementByJS(By.xpath("//button[contains(text(),'Đồng ý')]"));
+
+		sleepInSecond(1);
+		Assert.assertEquals("https://ads.zalo.me/client/ads/detail/15704693", driver.getCurrentUrl());
+		
+		//Kiểm tra xem tuổi đã chọn có trùng với những thằng nhấn trước khi lưu hay không
+		By ageString = By.xpath("//span[contains(text(),'Độ tuổi:')]/following-sibling::div//span");
+		Assert.assertTrue(splitString(ageString,selectedValueSave));
 	}
 
 	// @AfterClass
@@ -113,33 +133,76 @@ public class Demo_Zalo_Ads2 {
 	}
 
 	public boolean checkSelectedItem(String[] expectedValueItem) {
-		//driver.findElement(By.xpath("//div[@class='c-btn']")).click();
+		// driver.findElement(By.xpath("//div[@class='c-btn']")).click();
 		List<WebElement> allSelectedItem = driver.findElements(
 				By.xpath("//li[@class='pure-checkbox selected-item']//div[@class='squaredFour have-label']//label"));
-		int a = allSelectedItem.size();
-		int b = expectedValueItem.length;
+		int sizeOfSelectedItem = allSelectedItem.size();
+		int sizeOfExpectedItem = expectedValueItem.length;
 		boolean status = false;
-		if (a == b) {
+		//Nếu item dã select bằng số lượng item mong muón thì check tiếp
+		if (sizeOfSelectedItem == sizeOfExpectedItem) {
 			for (WebElement childSelectedElement : allSelectedItem) {
 				boolean n = false;
 				String childSeletedItemText = childSelectedElement.getText();
-				for (int i = 0; i < b; i++) {
+				for (int i = 0; i < sizeOfExpectedItem; i++) {
+					//nêu thăng đang select trùng với giá trị mong đợi thì thoát khỏi vòng lặp, check thằng đang select tiếp theo
 					if (childSeletedItemText.equals(expectedValueItem[i])) {
 						n = true;
 						break;
 					}
-					n = false;
-					//continue;					
+					//nêu ko trùng thì check đến list expect xem thằng select có trùng với bất kỳ item nào trong expect hay k
+					n = false;					
 				}
+				//cứ chạy hết 1 item thì kiểm tra status 1 lần, nếu là false tức là thằng đang chọn ko trùng với expected >> N/G
 				status = n;
-				if(status == false) {
+				if (status == false) {
 					break;
-				}else continue;
-				
+				} else
+					//nếu đã map được 1 item thì compare ỉtem tiếp theo trong list select
+					continue;
+
 			}
 
 		}
 		return status;
+	}
+
+	public void clickToElementByJS(By by) {
+		WebElement element = driver.findElement(by);
+		jsExecutor.executeScript("arguments[0].click()", element);
+	}
+	
+	public boolean splitString(By age,List<String> expected) {
+		String selectedAge  = driver.findElement(age).getText();
+		
+		String[] splitAgeText = selectedAge.split(",");
+		List<String> displayedItem = Arrays.asList(splitAgeText);
+		
+		int sizeOfAdsDetailItems = displayedItem.size();
+		int sizeOfExpectedValue = expected.size();
+		
+		boolean status = false;
+		//Nếu item dã select bằng số lượng item mong muón thì check tiếp
+		if (sizeOfAdsDetailItems == sizeOfExpectedValue) {
+			for (String childSelectedElement : displayedItem) {				
+				boolean n = false;				
+				for (int i = 0; i < sizeOfExpectedValue; i++) {
+					if (childSelectedElement.trim().equals(expected.get(i))) {
+						n = true;
+						break;
+					}
+					n = false;					
+				}
+				status = n;
+				if (status == false) {
+					break;
+				} else
+					continue;
+			}
+
+		}
+		return status;
+		
 	}
 
 	public void sleepInSecond(long timeoutInSecond) {
