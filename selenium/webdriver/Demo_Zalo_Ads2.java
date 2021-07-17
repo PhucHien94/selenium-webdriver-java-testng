@@ -22,7 +22,7 @@ public class Demo_Zalo_Ads2 {
 	WebDriverWait explicitWait;
 	JavascriptExecutor jsExecutor;
 
-	String[] selectValueExpect = { "25-34", "35-44", "55-64" };
+	String[] selectValueExpect = { "25-34", "35-44" };
 	List<String> selectedValueSave = new ArrayList<String>();
 
 	@BeforeClass
@@ -33,6 +33,7 @@ public class Demo_Zalo_Ads2 {
 		explicitWait = new WebDriverWait(driver, 10);
 		jsExecutor = (JavascriptExecutor) driver;
 		driver.manage().timeouts().implicitlyWait(5, TimeUnit.SECONDS);
+		driver.manage().window().maximize();
 	}
 
 	// Login
@@ -57,15 +58,19 @@ public class Demo_Zalo_Ads2 {
 	@Test
 	public void TC_02_Ads_Create() {
 		driver.get("https://ads.zalo.me/client/ads/create/15704693");
+		
+		//Click to checkbox
 		clickToElement(selectValueExpect);
 		sleepInSecond(1);
+		
+		//Compare seleted checkbox with expected value
 		Assert.assertTrue(checkSelectedItem(selectValueExpect));
 
 	}
 
 	@Test
 	public void TC_03_Save() {
-		//Luu tuoi da chon
+		//Luu tuoi da chon 
 		List<WebElement> allSelectedItem = driver.findElements(
 				By.xpath("//li[@class='pure-checkbox selected-item']//div[@class='squaredFour have-label']//label"));
 		for (WebElement childSelectedElement : allSelectedItem) {
@@ -79,11 +84,13 @@ public class Demo_Zalo_Ads2 {
 		clickToElementByJS(By.xpath("//button[contains(text(),'Đồng ý')]"));
 
 		sleepInSecond(1);
+		//check navigation correct url
 		Assert.assertEquals("https://ads.zalo.me/client/ads/detail/15704693", driver.getCurrentUrl());
 		
 		//Kiểm tra xem tuổi đã chọn có trùng với những thằng nhấn trước khi lưu hay không
+		//Lấy xpath của thằng chứa độ tuổi
 		By ageString = By.xpath("//span[contains(text(),'Độ tuổi:')]/following-sibling::div//span");
-		Assert.assertTrue(splitString(ageString,selectedValueSave));
+		Assert.assertTrue(compareAge_Ads_Edit_Detail(ageString,selectedValueSave));
 	}
 
 	// @AfterClass
@@ -143,6 +150,7 @@ public class Demo_Zalo_Ads2 {
 		if (sizeOfSelectedItem == sizeOfExpectedItem) {
 			for (WebElement childSelectedElement : allSelectedItem) {
 				boolean n = false;
+				//Lấy text của thằng đã selected
 				String childSeletedItemText = childSelectedElement.getText();
 				for (int i = 0; i < sizeOfExpectedItem; i++) {
 					//nêu thăng đang select trùng với giá trị mong đợi thì thoát khỏi vòng lặp, check thằng đang select tiếp theo
@@ -172,9 +180,11 @@ public class Demo_Zalo_Ads2 {
 		jsExecutor.executeScript("arguments[0].click()", element);
 	}
 	
-	public boolean splitString(By age,List<String> expected) {
+	public boolean compareAge_Ads_Edit_Detail(By age,List<String> expected) {
+		//Lấy text chỗ độ tuổi
 		String selectedAge  = driver.findElement(age).getText();
 		
+		//cắt string để lấy từng phần tử > add vào list (bằng cách bỏ dấu phẩy, cứ gặp dấu phẩy thì sẽ add chuỗi vào list
 		String[] splitAgeText = selectedAge.split(",");
 		List<String> displayedItem = Arrays.asList(splitAgeText);
 		
@@ -187,6 +197,7 @@ public class Demo_Zalo_Ads2 {
 			for (String childSelectedElement : displayedItem) {				
 				boolean n = false;				
 				for (int i = 0; i < sizeOfExpectedValue; i++) {
+					//sau khi cắt string thì có xuất hiện space phía trước item, nên cần trim để xóa đi space đó
 					if (childSelectedElement.trim().equals(expected.get(i))) {
 						n = true;
 						break;
