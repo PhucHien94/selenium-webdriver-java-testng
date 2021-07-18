@@ -36,7 +36,6 @@ public class Demo_Zalo_Ads2 {
 		driver.manage().window().maximize();
 	}
 
-	// Login
 	@Test
 	public void TC_01_Login_Empty_Email_Password() {
 
@@ -93,7 +92,7 @@ public class Demo_Zalo_Ads2 {
 		Assert.assertTrue(compareAge_Ads_Edit_Detail(ageString,selectedValueSave));
 	}
 
-	// @AfterClass
+	@AfterClass
 	public void afterClass() {
 		driver.quit();
 	}

@@ -19,9 +19,12 @@ public class Topic_10_Alert {
 	WebDriver driver;
 	WebDriverWait explicitWait;
 	Alert alert;
+	String projectPath = System.getProperty("user.dir");
 
 	@BeforeClass
 	public void beforeClass() {
+		System.setProperty("webdriver.gecko.driver", projectPath + "\\browserDrivers\\geckodriver.exe");
+		
 		driver = new FirefoxDriver();
 		explicitWait = new WebDriverWait(driver,10);
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);

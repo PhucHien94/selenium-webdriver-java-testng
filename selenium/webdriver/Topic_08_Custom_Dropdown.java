@@ -3,7 +3,6 @@ package webdriver;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
-import javax.sound.midi.Soundbank;
 
 import org.openqa.selenium.By;
 import org.openqa.selenium.JavascriptExecutor;
@@ -19,8 +18,6 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.sun.corba.se.impl.oa.poa.ActiveObjectMap.Key;
-import com.sun.xml.internal.ws.client.SenderException;
 
 public class Topic_08_Custom_Dropdown {
 	WebDriver driver;
@@ -145,7 +142,7 @@ public class Topic_08_Custom_Dropdown {
 
 	}
 
-	//@Test
+	@Test
 	public void TC_06_Multiple() {
 		driver.get("https://multiple-select.wenzhixin.net.cn/templates/template.html?v=189&url=basic.html");
 
@@ -242,7 +239,6 @@ public class Topic_08_Custom_Dropdown {
 		driver.findElement(By.xpath(parentXpath)).click();
 
 		// 2: chờ cho tất cả các giá trị trong dropdown được load ra thành công
-
 		List<WebElement> allItems = explicitWait
 				.until(ExpectedConditions.presenceOfAllElementsLocatedBy(By.xpath(childXpath)));
 

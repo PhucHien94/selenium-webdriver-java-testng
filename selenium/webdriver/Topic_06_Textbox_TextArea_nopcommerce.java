@@ -13,9 +13,6 @@ import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
-import com.thoughtworks.selenium.webdriven.commands.Click;
-
-
 public class Topic_06_Textbox_TextArea_nopcommerce {
 	WebDriver driver;
 	String email, password, firstName, lastName, updateEmail, updateFirstName, updateLastName;

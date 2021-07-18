@@ -26,7 +26,7 @@ public class Topic_05_Web_Element_Method {
 	}
 
 	@Test
-	public void TC_01_Wrb_Element() {
+	public void TC_01_Web_Element() {
 		//Muon thao tac voi element th phai tim element
 		
 		//Thao tác vs 1 element

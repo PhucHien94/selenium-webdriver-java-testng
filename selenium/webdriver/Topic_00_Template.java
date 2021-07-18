@@ -10,9 +10,12 @@ import org.testng.annotations.Test;
 
 public class Topic_00_Template {
 	WebDriver driver;
-	
+	String projectPath = System.getProperty("user.dir");
+
 	@BeforeClass
 	public void beforeClass() {
+		System.setProperty("webdriver.gecko.driver", projectPath + "\\browserDrivers\\geckodriver.exe");
+
 		driver = new FirefoxDriver();	
 		driver.manage().timeouts().implicitlyWait(30, TimeUnit.SECONDS);
 	}

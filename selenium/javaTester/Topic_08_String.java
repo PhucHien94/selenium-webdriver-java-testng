@@ -1,7 +1,5 @@
 package javaTester;
 
-import com.sun.jna.platform.win32.WinDef.HFONT;
-
 public class Topic_08_String {
 
 	public static void main(String[] args) {
